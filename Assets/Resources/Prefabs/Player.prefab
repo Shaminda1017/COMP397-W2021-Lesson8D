@@ -290,6 +290,9 @@ MonoBehaviour:
   miniMap: {fileID: 0}
   jumpSound: {fileID: 8436963034874414040}
   hitSound: {fileID: 3303593023984481759}
+  playerCam: {fileID: 6772298074691407823}
+  healthBar: {fileID: 0}
+  health: 100
 --- !u!1 &6772298074463666391
 GameObject:
   m_ObjectHideFlags: 0

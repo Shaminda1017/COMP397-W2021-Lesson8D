@@ -6,6 +6,11 @@ public class PlayerBehaviour : MonoBehaviour
 {
     public CharacterController controller;
 
+    [Header("Controls")]
+    public Joystick joystick;
+    public float horizontalSensitivity;
+    public float verticalSensitivity;
+
     [Header("Movement")]
     public float maxSpeed = 10.0f;
     public float gravity = -30.0f;
@@ -24,6 +29,7 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Player Sounds")] 
     public AudioSource jumpSound;
     public AudioSource hitSound;
+    public Camera playerCam;
 
 
     [Header("HealthBar")] 
@@ -33,16 +39,11 @@ public class PlayerBehaviour : MonoBehaviour
     [Range(0, 100)]
     public int health = 100;
 
-    private Vector3 m_touchesEnded;
-    private float x, z;
-
+   
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
-
-         x = 0.0f;
-         z = 0.0f;
     }
 
     // Update is called once per frame - once every 16.6666ms
@@ -56,36 +57,13 @@ public class PlayerBehaviour : MonoBehaviour
             velocity.y = -2.0f;
         }
 
-        
-        // INput for WebGL and desktop
-        //float x = Input.GetAxis("Horizontal");
-        //float z = Input.GetAxis("Vertical");
 
-        float direction = 0.0f;
-        foreach (var touch in Input.touches)
-        {
-            var worldTouch = Camera.main.ScreenToWorldPoint(touch.position);
+        float x = joystick.Horizontal;
+        float z = joystick.Vertical;
 
-            x = worldTouch.x;
-           // z = worldTouch.z;
-            m_touchesEnded = worldTouch;
-            //Debug.Log(m_touchesEnded.ToString());
+        Debug.Log("Joystick X: " + x);
 
-        }
-        //move left
-        if (x > transform.position.x)
-        {
-            direction = 1.0f;
-        }
-        //move right
-        if (x < transform.position.x)
-        {
-            direction = -1.0f;
-        }
-
-        Debug.Log(direction);
-
-        Vector3 move = transform.right * x * direction;// + transform.forward * z;
+        Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(move * maxSpeed * Time.deltaTime);
 
