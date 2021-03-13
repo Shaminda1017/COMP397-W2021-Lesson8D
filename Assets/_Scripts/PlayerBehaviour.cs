@@ -33,10 +33,16 @@ public class PlayerBehaviour : MonoBehaviour
     [Range(0, 100)]
     public int health = 100;
 
+    private Vector3 m_touchesEnded;
+    private float x, z;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+         x = 0.0f;
+         z = 0.0f;
     }
 
     // Update is called once per frame - once every 16.6666ms
@@ -50,10 +56,36 @@ public class PlayerBehaviour : MonoBehaviour
             velocity.y = -2.0f;
         }
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        
+        // INput for WebGL and desktop
+        //float x = Input.GetAxis("Horizontal");
+        //float z = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        float direction = 0.0f;
+        foreach (var touch in Input.touches)
+        {
+            var worldTouch = Camera.main.ScreenToWorldPoint(touch.position);
+
+            x = worldTouch.x;
+           // z = worldTouch.z;
+            m_touchesEnded = worldTouch;
+            //Debug.Log(m_touchesEnded.ToString());
+
+        }
+        //move left
+        if (x > transform.position.x)
+        {
+            direction = 1.0f;
+        }
+        //move right
+        if (x < transform.position.x)
+        {
+            direction = -1.0f;
+        }
+
+        Debug.Log(direction);
+
+        Vector3 move = transform.right * x * direction;// + transform.forward * z;
 
         controller.Move(move * maxSpeed * Time.deltaTime);
 
